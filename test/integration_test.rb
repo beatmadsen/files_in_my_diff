@@ -3,7 +3,9 @@
 require 'test_helper'
 
 class IntegrationTest < Minitest::Test
-  def test_it_works
-    assert true
+  def test_that_main_interface_returns_non_empty_result_for_valid_input
+    changes = FilesInMyDiff.checkout(folder: GIT_PROJECT_PATH, commit: 'HEAD')
+    refute_nil changes
+    refute_empty changes
   end
 end
