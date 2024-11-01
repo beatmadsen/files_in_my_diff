@@ -15,9 +15,3 @@ Minitest.parallel_executor = ActiveSupport::Testing::ParallelizeExecutor.new(
   with: :processes,
   threshold: 0,
 )
-
-module Minitest
-  class Test
-    parallelize_me!
-  end
-end
