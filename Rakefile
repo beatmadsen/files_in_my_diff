@@ -10,4 +10,4 @@ require 'rubocop/rake_task'
 RuboCop::RakeTask.new
 
 # auto-correct rubocop offenses
-task default: %i[test rubocop:auto_correct]
+task default: %i[test rubocop:autocorrect]
