@@ -6,9 +6,19 @@ require 'tmpdir'
 
 GIT_PROJECT_PATH = Dir.mktmpdir
 
+def setup_fake_local_git_identity
+  original_dir = Dir.pwd
+  Dir.chdir(GIT_PROJECT_PATH)
+  `git config user.email "test@example.com"`
+  `git config user.name "Test User"`
+  # go back to the original directory
+  Dir.chdir(original_dir)
+end
+
 # Set up a dummy Git project before running tests
 def setup_dummy_git_project
   repo = Git.init(GIT_PROJECT_PATH)
+  setup_fake_local_git_identity
 
   ['first.rb', 'second.rb', 'third.rb'].each do |file_name|
     source_file = File.join(FilesInMyDiff.root, 'test', 'support', file_name)
