@@ -13,5 +13,4 @@ gem 'rubocop', '~> 1.21'
 
 group :development, :test do
   gem 'activesupport', '~> 7.2'
-  gem 'git', '~> 2.3'
 end

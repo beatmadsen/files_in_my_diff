@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     files_in_my_diff (0.1.0)
+      git (~> 2.3)
 
 GEM
   remote: https://rubygems.org/
@@ -74,7 +75,6 @@ PLATFORMS
 DEPENDENCIES
   activesupport (~> 7.2)
   files_in_my_diff!
-  git (~> 2.3)
   minitest (~> 5.16)
   rake (~> 13.0)
   rubocop (~> 1.21)
