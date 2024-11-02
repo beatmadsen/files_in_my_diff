@@ -28,11 +28,7 @@ module FilesInMyDiff
         end
 
         def object(_revision)
-          GitObjectStub.new
-        end
-
-        def revision_exists?(_revision = nil)
-          @revision_exists
+          @revision_exists ? GitObjectStub.new : nil
         end
       end
 

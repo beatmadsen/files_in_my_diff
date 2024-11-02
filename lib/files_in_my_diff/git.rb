@@ -12,7 +12,7 @@ module FilesInMyDiff
       end
 
       def validate!
-        raise ValidationError, "Revision #{@revision} does not exist" unless @adapter.revision_exists?(@revision)
+        raise ValidationError, "Revision #{@revision} does not exist" if @object.nil?
       end
     end
 
@@ -23,6 +23,8 @@ module FilesInMyDiff
                     else
                       @repo.object(revision)
                     end
+      rescue ::Git::FailedError
+        nil
       end
 
       def initialize(folder:, repo: ::Git.open(folder))
