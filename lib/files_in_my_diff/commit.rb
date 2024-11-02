@@ -2,6 +2,8 @@
 
 module FilesInMyDiff
   module Commit
+    class DirectoryError < FilesInMyDiff::Error; end
+
     class Main
       def initialize(folder:, revision:, file_strategy: FileStrategy, git_strategy: GitStrategy.new(folder:))
         @folder = folder
@@ -13,7 +15,9 @@ module FilesInMyDiff
       def call
         validate_folder!
         validate_revision!
-        { dummy: true }
+        sha = @git_strategy.object.sha
+        dir = @file_strategy.create_tmp_dir(sha)
+        { dir:, sha: }
       end
 
       private
@@ -33,19 +37,28 @@ module FilesInMyDiff
       def self.dir_exists?(folder)
         Dir.exist?(folder)
       end
+
+      def self.create_tmp_dir(sha)
+        path = File.join(Dir.tmpdir, 'files_in_my_diff', sha)
+        FileUtils.mkdir_p(path)
+        path
+      end
     end
 
     class GitStrategy
+      attr_reader :object
+
       def initialize(folder:, repo: Git.open(folder))
         @repo = repo
       end
 
       def revision_exists?(revision)
-        if revision.is_a?(Git::Object::AbstractObject)
-          @repo.object(revision.sha) && true
-        else
-          @repo.object(revision) && true
-        end
+        @object = if revision.is_a?(Git::Object::AbstractObject)
+                    @repo.object(revision.sha)
+                  else
+                    @repo.object(revision)
+                  end
+        @object && true
       rescue Git::FailedError
         false
       end
