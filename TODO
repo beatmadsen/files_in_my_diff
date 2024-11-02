@@ -1,0 +1,5 @@
+Refactor main to use intermediary git diff abstraction
+
+Checkout worktree in tmp dir
+Locate files from diff in worktree
+Add full path to files in tmp dir to output annotated with change type

@@ -4,19 +4,33 @@ module FilesInMyDiff
   module Git
     class DiffError < Error; end
 
+    class Diff
+      def initialize(folder:, revision:, adapter: Adapter.new(folder:))
+        @revision = revision
+        @adapter = adapter
+        @object = adapter.object(@revision)
+      end
+
+      def validate!
+        raise ValidationError, "Revision #{@revision} does not exist" unless @adapter.revision_exists?(@revision)
+      end
+    end
+
     class Adapter
-      attr_reader :object
+      def object(revision = nil)
+        @object ||= if revision.is_a?(::Git::Object::AbstractObject)
+                      @repo.object(revision.sha)
+                    else
+                      @repo.object(revision)
+                    end
+      end
 
       def initialize(folder:, repo: ::Git.open(folder))
         @repo = repo
       end
 
       def revision_exists?(revision)
-        @object = if revision.is_a?(::Git::Object::AbstractObject)
-                    @repo.object(revision.sha)
-                  else
-                    @repo.object(revision)
-                  end
+        @object = object(revision)
         @object && true
       rescue ::Git::FailedError
         false
