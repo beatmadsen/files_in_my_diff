@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'git'
-require 'tmpdir'
 require 'fileutils'
 
 module FilesInMyDiff
@@ -10,8 +9,9 @@ module FilesInMyDiff
 end
 
 require_relative 'files_in_my_diff/version'
-require_relative 'files_in_my_diff/commit'
+require_relative 'files_in_my_diff/tmp_dir'
 require_relative 'files_in_my_diff/git'
+require_relative 'files_in_my_diff/commit'
 
 module FilesInMyDiff
   def self.root

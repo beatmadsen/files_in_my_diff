@@ -36,7 +36,7 @@ module FilesInMyDiff
       end
 
       def test_that_error_on_tmp_dir_resolution_is_propagated
-        assert_raises(DirectoryError) do
+        assert_raises(TmpDir::DirectoryError) do
           file_strategy = file_strategy_stub(create_success: false)
           subject(file_strategy:).call
         end
@@ -76,7 +76,7 @@ module FilesInMyDiff
         end
 
         def create_tmp_dir(_sha)
-          raise DirectoryError unless @create_success
+          raise TmpDir::DirectoryError unless @create_success
 
           'some_tpm_dir'
         end
