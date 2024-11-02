@@ -14,7 +14,10 @@ module FilesInMyDiff
       def checkout_worktree(path, revision)
         @repo.add_worktree(path, revision)
       rescue ::Git::FailedError => e
-        raise CheckoutError, "Could not checkout #{revision} to #{path}: #{e.message}"
+        unless e.result.stderr.include? 'already exists'
+          raise CheckoutError,
+                "Could not checkout #{revision} to #{path}: #{e.message}"
+        end
       end
 
       private

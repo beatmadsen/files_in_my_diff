@@ -32,6 +32,11 @@ module FilesInMyDiff
         end
       end
 
+      def test_that_checkout_failure_is_recovered_if_worktree_already_exists
+        subject = subject(repo: repo_stub(checkout_success: MyFailedError.new('blabla already exists blabla')))
+        subject.checkout_worktree('x', 'y')
+      end
+
       private
 
       def subject(repo: repo_stub)
@@ -66,6 +71,7 @@ module FilesInMyDiff
         end
 
         def add_worktree(_path, _revision)
+          raise @checkout_success if @checkout_success.is_a?(::Git::FailedError)
           raise MyFailedError unless @checkout_success
         end
 
@@ -75,14 +81,19 @@ module FilesInMyDiff
       end
 
       class MyFailedError < ::Git::FailedError
-        def initialize
-          super(Command)
+        def initialize(stderr = 'dummy')
+          super(Command.new(stderr))
         end
 
-        module Command
-          def self.git_cmd = 'dummy'
-          def self.status = 'dummy'
-          def self.stderr = 'dummy'
+        class Command
+          attr_reader :stderr
+
+          def initialize(stderr)
+            @stderr = stderr
+          end
+
+          def git_cmd = 'dummy'
+          def status = 'dummy'
         end
       end
     end
