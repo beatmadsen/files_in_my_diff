@@ -16,11 +16,23 @@ module FilesInMyDiff
         end
       end
 
-      def test_that_main_validates_revision_as_a_real_git_object
+      def test_that_main_validates_that_revision_exists
         assert_raises(ValidationError) do
           git_strategy = git_strategy_stub(revision_exists: false)
           subject(git_strategy:).call
         end
+      end
+
+      def test_that_main_accepts_a_git_object_as_a_revision
+        refute_nil subject(revision: GitObjectStub.new).call
+      end
+
+      def test_that_main_accepts_an_integer_version_as_a_revision
+        refute_nil subject(revision: 32).call
+      end
+
+      def test_that_main_accepts_a_relative_revision
+        refute_nil subject(revision: 'HEAD~1').call
       end
 
       private
@@ -35,6 +47,12 @@ module FilesInMyDiff
 
       def git_strategy_stub(revision_exists: true)
         GitStrategyStub.new(revision_exists)
+      end
+
+      class GitObjectStub < Git::Object::AbstractObject
+        def initialize
+          super(nil, nil)
+        end
       end
 
       class FileStrategyStub

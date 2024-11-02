@@ -36,12 +36,16 @@ module FilesInMyDiff
     end
 
     class GitStrategy
-      def initialize(folder:)
-        @repo = Git.open(folder)
+      def initialize(folder:, repo: Git.open(folder))
+        @repo = repo
       end
 
       def revision_exists?(revision)
-        @repo.object(revision) && true
+        if revision.is_a?(Git::Object::AbstractObject)
+          @repo.object(revision.sha) && true
+        else
+          @repo.object(revision) && true
+        end
       rescue Git::FailedError
         false
       end
