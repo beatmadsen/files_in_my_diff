@@ -56,7 +56,7 @@ module FilesInMyDiff
         GitStrategyStub.new(revision_exists, object)
       end
 
-      class GitObjectStub < Git::Object::AbstractObject
+      class GitObjectStub < ::Git::Object::AbstractObject
         attr_reader :sha
 
         def initialize(sha: 'abc')

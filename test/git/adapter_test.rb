@@ -3,8 +3,8 @@
 require 'test_helper'
 
 module FilesInMyDiff
-  module Commit
-    class GitStrategyTest < Minitest::Test
+  module Git
+    class AdapterTest < Minitest::Test
       def test_that_revision_exists_is_evaluated_by_sha_for_git_objects
         mock = GitRepoMock.new
         sha = 'y'
@@ -22,10 +22,10 @@ module FilesInMyDiff
       private
 
       def subject(repo: GitRepoStub.new)
-        GitStrategy.new(repo:, folder: 'x')
+        Adapter.new(repo:, folder: 'x')
       end
 
-      class GitObjectStub < Git::Object::AbstractObject
+      class GitObjectStub < ::Git::Object::AbstractObject
         attr_reader :sha
 
         def initialize(sha: nil)

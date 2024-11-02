@@ -5,7 +5,7 @@ module FilesInMyDiff
     class DirectoryError < FilesInMyDiff::Error; end
 
     class Main
-      def initialize(folder:, revision:, file_strategy: FileStrategy, git_strategy: GitStrategy.new(folder:))
+      def initialize(folder:, revision:, file_strategy: FileStrategy, git_strategy: Git::Adapter.new(folder:))
         @folder = folder
         @revision = revision
         @file_strategy = file_strategy
@@ -42,25 +42,6 @@ module FilesInMyDiff
         path = File.join(Dir.tmpdir, 'files_in_my_diff', sha)
         FileUtils.mkdir_p(path)
         path
-      end
-    end
-
-    class GitStrategy
-      attr_reader :object
-
-      def initialize(folder:, repo: Git.open(folder))
-        @repo = repo
-      end
-
-      def revision_exists?(revision)
-        @object = if revision.is_a?(Git::Object::AbstractObject)
-                    @repo.object(revision.sha)
-                  else
-                    @repo.object(revision)
-                  end
-        @object && true
-      rescue Git::FailedError
-        false
       end
     end
   end

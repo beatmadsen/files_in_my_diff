@@ -11,6 +11,7 @@ end
 
 require_relative 'files_in_my_diff/version'
 require_relative 'files_in_my_diff/commit'
+require_relative 'files_in_my_diff/git'
 
 module FilesInMyDiff
   def self.root
