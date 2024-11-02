@@ -18,6 +18,12 @@ module FilesInMyDiff
       def sha
         @object.sha
       end
+
+      def changes
+        @object.diff_parent.map do |change|
+          { path: change.path, type: change.type }
+        end
+      end
     end
 
     class Adapter
