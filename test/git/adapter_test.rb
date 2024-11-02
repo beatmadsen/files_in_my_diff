@@ -5,18 +5,22 @@ require 'test_helper'
 module FilesInMyDiff
   module Git
     class AdapterTest < Minitest::Test
-      def test_that_revision_exists_is_evaluated_by_sha_for_git_objects
+      def test_it_returns_a_diff_instance
+        assert_instance_of Diff, subject.diff2('x')
+      end
+
+      def test_that_diff_is_evaluated_by_sha_for_git_objects
         mock = GitRepoMock.new
         sha = 'y'
-        subject(repo: mock).revision_exists?(GitObjectStub.new(sha:))
+        subject(repo: mock).diff2(GitObjectStub.new(sha:))
 
         assert_equal mock.object_called_with, sha
       end
 
-      def test_that_revision_exists_is_evaluated_by_revision_for_strings
+      def test_that_diff_is_evaluated_by_revision_for_strings
         mock = GitRepoMock.new
         revision = 'HEAD~1'
-        subject(repo: mock).revision_exists?(revision)
+        subject(repo: mock).diff2(revision)
 
         assert_equal mock.object_called_with, revision
       end

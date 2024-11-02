@@ -47,6 +47,10 @@ module FilesInMyDiff
         false
       end
 
+      def diff2(revision)
+        Diff.new(object: object(revision), revision:)
+      end
+
       def diff
         @object.diff_parent.map do |change|
           { path: change.path, type: change.type }
