@@ -6,9 +6,8 @@ module FilesInMyDiff
   module Git
     class DiffTest < Minitest::Test
       def test_it_validates_that_revision_exists
-        adapter = adapter_stub(revision_exists: false)
         assert_raises(ValidationError) do
-          subject(adapter:).validate!
+          subject(object: nil).validate!
         end
       end
 
@@ -17,9 +16,8 @@ module FilesInMyDiff
       end
 
       def test_that_error_on_diff_calculation_is_propagated
-        adapter = adapter_stub(diff_success: false)
         assert_raises(Git::DiffError) do
-          subject(adapter:).changes
+          subject(object: git_object_stub(diff_success: false)).changes
         end
       end
 
@@ -29,23 +27,12 @@ module FilesInMyDiff
 
       private
 
-      def subject(adapter: adapter_stub)
-        Diff.new(folder: 'x', revision: 'y', adapter:)
+      def subject(object: git_object_stub, revision: 'y')
+        Diff.new(object:, revision:)
       end
 
-      def adapter_stub(revision_exists: true, diff_success: true)
-        AdapterStub.new(revision_exists, diff_success)
-      end
-
-      class AdapterStub
-        def initialize(revision_exists, diff_success)
-          @revision_exists = revision_exists
-          @diff_success = diff_success
-        end
-
-        def object(_revision)
-          @revision_exists ? GitObjectStub.new(@diff_success) : nil
-        end
+      def git_object_stub(diff_success: true)
+        GitObjectStub.new(diff_success)
       end
 
       class GitObjectStub
@@ -60,7 +47,14 @@ module FilesInMyDiff
         end
       end
 
-      Change = Data.define(:path, :type)
+      class Change
+        attr_reader :path, :type
+
+        def initialize(path, type)
+          @path = path
+          @type = type
+        end
+      end
     end
   end
 end

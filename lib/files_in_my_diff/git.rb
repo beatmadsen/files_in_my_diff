@@ -5,10 +5,9 @@ module FilesInMyDiff
     class DiffError < Error; end
 
     class Diff
-      def initialize(folder:, revision:, adapter: Adapter.new(folder:))
+      def initialize(object:, revision:)
+        @object = object
         @revision = revision
-        @adapter = adapter
-        @object = adapter.object(@revision)
       end
 
       def validate!
