@@ -26,11 +26,6 @@ module FilesInMyDiff
         raise ValidationError, 'Folder is required' if @folder.nil?
         raise ValidationError, 'Folder does not exist' unless @file_strategy.dir_exists?(@folder)
       end
-
-      def validate_revision!
-        raise ValidationError, 'Revision is required' if @revision.nil?
-        raise ValidationError, 'Revision does not exist' unless @git_strategy.revision_exists?(@revision)
-      end
     end
   end
 end
