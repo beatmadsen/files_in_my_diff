@@ -25,10 +25,21 @@ module FilesInMyDiff
         assert_equal mock.object_called_with, revision
       end
 
+      def test_that_checkout_failure_is_propagated
+        subject = subject(repo: repo_stub(checkout_success: false))
+        assert_raises(Git::CheckoutError) do
+          subject.checkout_worktree('x', 'y')
+        end
+      end
+
       private
 
-      def subject(repo: GitRepoStub.new)
+      def subject(repo: repo_stub)
         Adapter.new(repo:, folder: 'x')
+      end
+
+      def repo_stub(checkout_success: true)
+        GitRepoStub.new(checkout_success)
       end
 
       class GitObjectStub < ::Git::Object::AbstractObject
@@ -50,8 +61,28 @@ module FilesInMyDiff
       end
 
       class GitRepoStub
+        def initialize(checkout_success)
+          @checkout_success = checkout_success
+        end
+
+        def add_worktree(_path, _revision)
+          raise MyFailedError unless @checkout_success
+        end
+
         def object(_revision)
           GitObjectStub.new
+        end
+      end
+
+      class MyFailedError < ::Git::FailedError
+        def initialize
+          super(Command)
+        end
+
+        module Command
+          def self.git_cmd = 'dummy'
+          def self.status = 'dummy'
+          def self.stderr = 'dummy'
         end
       end
     end

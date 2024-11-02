@@ -11,6 +11,12 @@ module FilesInMyDiff
         Diff.new(object: object(revision), revision:)
       end
 
+      def checkout_worktree(path, revision)
+        @repo.add_worktree(path, revision)
+      rescue ::Git::FailedError => e
+        raise CheckoutError, "Could not checkout #{revision} to #{path}: #{e.message}"
+      end
+
       private
 
       def object(revision)

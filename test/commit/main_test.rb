@@ -37,6 +37,13 @@ module FilesInMyDiff
         end
       end
 
+      def test_that_error_on_checkout_is_propagated
+        git_strategy = git_strategy_stub(checkout_success: false)
+        assert_raises(Git::CheckoutError) do
+          subject(git_strategy:).call
+        end
+      end
+
       private
 
       def subject(folder: 'x', revision: 'HEAD', file_strategy: file_strategy_stub, git_strategy: git_strategy_stub)
@@ -47,8 +54,8 @@ module FilesInMyDiff
         FileStrategyStub.new(dir_exists, create_success)
       end
 
-      def git_strategy_stub(revision_exists: true, diff_success: true)
-        GitStrategyStub.new(revision_exists, diff_success)
+      def git_strategy_stub(revision_exists: true, diff_success: true, checkout_success: true)
+        GitStrategyStub.new(revision_exists, diff_success, checkout_success)
       end
 
       class FileStrategyStub
@@ -69,9 +76,10 @@ module FilesInMyDiff
       end
 
       class GitStrategyStub
-        def initialize(revision_exists, diff_success)
+        def initialize(revision_exists, diff_success, checkout_success)
           @revision_exists = revision_exists
           @diff_success = diff_success
+          @checkout_success = checkout_success
         end
 
         def diff(_revision)
@@ -79,6 +87,10 @@ module FilesInMyDiff
           raise Git::DiffError unless @diff_success
 
           ValidDiffStub
+        end
+
+        def checkout_worktree(_dir, _sha)
+          raise Git::CheckoutError unless @checkout_success
         end
       end
 
