@@ -10,15 +10,15 @@ module FilesInMyDiff
       end
 
       def test_that_main_validates_folder_exists
+        file_strategy = file_strategy_stub(dir_exists: false)
         assert_raises(ValidationError) do
-          file_strategy = file_strategy_stub(dir_exists: false)
           subject(file_strategy:).call
         end
       end
 
       def test_that_main_validates_that_revision_exists
+        git_strategy = git_strategy_stub(revision_exists: false)
         assert_raises(ValidationError) do
-          git_strategy = git_strategy_stub(revision_exists: false)
           subject(git_strategy:).call
         end
       end
@@ -36,15 +36,15 @@ module FilesInMyDiff
       end
 
       def test_that_error_on_tmp_dir_resolution_is_propagated
+        file_strategy = file_strategy_stub(create_success: false)
         assert_raises(TmpDir::DirectoryError) do
-          file_strategy = file_strategy_stub(create_success: false)
           subject(file_strategy:).call
         end
       end
 
       def test_that_error_on_diff_calculation_is_propagated
+        git_strategy = git_strategy_stub(diff_success: false)
         assert_raises(Git::DiffError) do
-          git_strategy = git_strategy_stub(diff_success: false)
           subject(git_strategy:).call
         end
       end

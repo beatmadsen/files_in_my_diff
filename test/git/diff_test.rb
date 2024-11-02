@@ -6,10 +6,14 @@ module FilesInMyDiff
   module Git
     class DiffTest < Minitest::Test
       def test_it_validates_that_revision_exists
+        adapter = adapter_stub(revision_exists: false)
         assert_raises(ValidationError) do
-          adapter = adapter_stub(revision_exists: false)
           subject(adapter:).validate!
         end
+      end
+
+      def test_it_returns_the_sha_of_the_revision
+        assert_equal 'x', subject.sha
       end
 
       private

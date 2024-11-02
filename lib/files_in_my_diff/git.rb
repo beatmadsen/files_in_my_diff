@@ -14,6 +14,10 @@ module FilesInMyDiff
       def validate!
         raise ValidationError, "Revision #{@revision} does not exist" if @object.nil?
       end
+
+      def sha
+        @object.sha
+      end
     end
 
     class Adapter

@@ -9,6 +9,7 @@ module FilesInMyDiff
         mock = GitRepoMock.new
         sha = 'y'
         subject(repo: mock).revision_exists?(GitObjectStub.new(sha:))
+
         assert_equal mock.object_called_with, sha
       end
 
@@ -16,6 +17,7 @@ module FilesInMyDiff
         mock = GitRepoMock.new
         revision = 'HEAD~1'
         subject(repo: mock).revision_exists?(revision)
+
         assert_equal mock.object_called_with, revision
       end
 
