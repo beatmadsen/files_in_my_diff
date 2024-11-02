@@ -23,18 +23,6 @@ module FilesInMyDiff
         end
       end
 
-      def test_that_main_accepts_a_git_object_as_a_revision
-        refute_nil subject(revision: GitObjectStub.new).call
-      end
-
-      def test_that_main_accepts_an_integer_version_as_a_revision
-        refute_nil subject(revision: 32).call
-      end
-
-      def test_that_main_accepts_a_relative_revision
-        refute_nil subject(revision: 'HEAD~1').call
-      end
-
       def test_that_error_on_tmp_dir_resolution_is_propagated
         file_strategy = file_strategy_stub(create_success: false)
         assert_raises(TmpDir::DirectoryError) do
@@ -59,17 +47,8 @@ module FilesInMyDiff
         FileStrategyStub.new(dir_exists, create_success)
       end
 
-      def git_strategy_stub(revision_exists: true, object: GitObjectStub.new, diff_success: true)
-        GitStrategyStub.new(revision_exists, object, diff_success)
-      end
-
-      class GitObjectStub < ::Git::Object::AbstractObject
-        attr_reader :sha
-
-        def initialize(sha: 'abc')
-          super(nil, nil)
-          @sha = sha
-        end
+      def git_strategy_stub(revision_exists: true, diff_success: true)
+        GitStrategyStub.new(revision_exists, diff_success)
       end
 
       class FileStrategyStub
@@ -90,22 +69,30 @@ module FilesInMyDiff
       end
 
       class GitStrategyStub
-        attr_reader :object
-
-        def initialize(revision_exists, object, diff_success)
+        def initialize(revision_exists, diff_success)
           @revision_exists = revision_exists
-          @object = object
           @diff_success = diff_success
         end
 
-        def revision_exists?(_revision)
-          @revision_exists
-        end
-
-        def diff
+        def diff(_revision)
+          return InvalidDiffStub unless @revision_exists
           raise Git::DiffError unless @diff_success
 
-          { 'file_1' => :changed, 'file_2' => :deleted, 'file_3' => :added }
+          ValidDiffStub
+        end
+      end
+
+      module InvalidDiffStub
+        def self.validate!
+          raise ValidationError
+        end
+      end
+
+      module ValidDiffStub
+        class << self
+          def validate! = true
+          def sha = 'abcd1234'
+          def changes = []
         end
       end
     end

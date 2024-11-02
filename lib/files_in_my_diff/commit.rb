@@ -12,11 +12,11 @@ module FilesInMyDiff
 
       def call
         validate_folder!
-        validate_revision!
-        sha = @git_strategy.object.sha
-        @git_strategy.diff
-        dir = @file_strategy.create_tmp_dir(sha)
-        { dir:, sha: }
+        diff = @git_strategy.diff(@revision)
+        diff.validate!
+        diff.changes
+        dir = @file_strategy.create_tmp_dir(diff.sha)
+        { dir:, sha: diff.sha }
       end
 
       private

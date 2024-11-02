@@ -26,37 +26,24 @@ module FilesInMyDiff
     end
 
     class Adapter
-      def object(revision = nil)
-        @object ||= if revision.is_a?(::Git::Object::AbstractObject)
-                      @repo.object(revision.sha)
-                    else
-                      @repo.object(revision)
-                    end
-      rescue ::Git::FailedError
-        nil
-      end
-
       def initialize(folder:, repo: ::Git.open(folder))
         @repo = repo
       end
 
-      def revision_exists?(revision)
-        @object = object(revision)
-        @object && true
-      rescue ::Git::FailedError
-        false
-      end
-
-      def diff2(revision)
+      def diff(revision)
         Diff.new(object: object(revision), revision:)
       end
 
-      def diff
-        @object.diff_parent.map do |change|
-          { path: change.path, type: change.type }
+      private
+
+      def object(revision)
+        if revision.is_a?(::Git::Object::AbstractObject)
+          @repo.object(revision.sha)
+        else
+          @repo.object(revision)
         end
-      rescue ::Git::FailedError => e
-        raise DiffError, "Failed to get diff for #{@object.sha}: #{e.message}"
+      rescue ::Git::FailedError
+        nil
       end
     end
   end
