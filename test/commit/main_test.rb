@@ -42,6 +42,13 @@ module FilesInMyDiff
         end
       end
 
+      def test_that_error_on_diff_calculation_is_propagated
+        assert_raises(Git::DiffError) do
+          git_strategy = git_strategy_stub(diff_success: false)
+          subject(git_strategy:).call
+        end
+      end
+
       private
 
       def subject(folder: 'x', revision: 'HEAD', file_strategy: file_strategy_stub, git_strategy: git_strategy_stub)
@@ -52,8 +59,8 @@ module FilesInMyDiff
         FileStrategyStub.new(dir_exists, create_success)
       end
 
-      def git_strategy_stub(revision_exists: true, object: GitObjectStub.new)
-        GitStrategyStub.new(revision_exists, object)
+      def git_strategy_stub(revision_exists: true, object: GitObjectStub.new, diff_success: true)
+        GitStrategyStub.new(revision_exists, object, diff_success)
       end
 
       class GitObjectStub < ::Git::Object::AbstractObject
@@ -85,13 +92,20 @@ module FilesInMyDiff
       class GitStrategyStub
         attr_reader :object
 
-        def initialize(revision_exists, object)
+        def initialize(revision_exists, object, diff_success)
           @revision_exists = revision_exists
           @object = object
+          @diff_success = diff_success
         end
 
         def revision_exists?(_revision)
           @revision_exists
+        end
+
+        def diff
+          raise Git::DiffError unless @diff_success
+
+          { 'file_1' => :changed, 'file_2' => :deleted, 'file_3' => :added }
         end
       end
     end

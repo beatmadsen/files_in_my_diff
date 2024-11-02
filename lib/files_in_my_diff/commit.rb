@@ -15,6 +15,7 @@ module FilesInMyDiff
         validate_revision!
         sha = @git_strategy.object.sha
         dir = @file_strategy.create_tmp_dir(sha)
+        @git_strategy.diff
         { dir:, sha: }
       end
 

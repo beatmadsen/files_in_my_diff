@@ -2,6 +2,8 @@
 
 module FilesInMyDiff
   module Git
+    class DiffError < Error; end
+
     class Adapter
       attr_reader :object
 
@@ -18,6 +20,14 @@ module FilesInMyDiff
         @object && true
       rescue ::Git::FailedError
         false
+      end
+
+      def diff
+        @object.diff_parent.map do |change|
+          { path: change.path, type: change.type }
+        end
+      rescue ::Git::FailedError => e
+        raise DiffError, "Failed to get diff for #{@object.sha}: #{e.message}"
       end
     end
   end
