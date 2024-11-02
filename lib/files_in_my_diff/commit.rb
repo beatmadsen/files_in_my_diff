@@ -14,11 +14,10 @@ module FilesInMyDiff
         validate_folder!
         diff = @git_strategy.diff(@revision)
         diff.validate!
-        diff.changes
         dir = @file_strategy.create_tmp_dir(diff.sha)
         @git_strategy.checkout_worktree(dir, diff.sha)
-        # @file_strategy.locate_files(dir, changes)
-        { dir:, sha: diff.sha }
+        decorated = @file_strategy.locate_files(dir, diff.changes)
+        { dir:, sha: diff.sha, changes: decorated }
       end
 
       private

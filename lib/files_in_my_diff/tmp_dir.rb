@@ -3,6 +3,7 @@
 module FilesInMyDiff
   module TmpDir
     class DirectoryError < FilesInMyDiff::Error; end
+    class FileError < FilesInMyDiff::Error; end
 
     module FileStrategy
       def self.dir_exists?(folder)
@@ -15,6 +16,11 @@ module FilesInMyDiff
         path
       rescue StandardError => e
         raise DirectoryError, "Failed to create tmp dir for #{sha}: #{e.message}"
+      end
+
+      def self.locate_files(_dir, changes)
+        # TODO
+        changes
       end
     end
   end
