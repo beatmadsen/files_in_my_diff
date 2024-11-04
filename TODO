@@ -1,1 +1,4 @@
+Similar refactoring like Diff but for TmpDir
+  Stateful object 
+
 Add full path to files in tmp dir to output annotated with change type
