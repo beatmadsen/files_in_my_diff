@@ -21,6 +21,12 @@ module FilesInMyDiff
         assert_nil subject.create!
       end
 
+      def test_that_decorating_fails_if_dir_not_created
+        file_strategy = file_strategy_stub(mkdir_success: false)
+        subject = subject(file_strategy:)
+        assert_raises(TmpDir::DirectoryError) { subject.decorate([]) }
+      end
+
       private
 
       def subject(sha: 'ab12cd34', file_strategy: file_strategy_stub)
