@@ -17,6 +17,10 @@ module FilesInMyDiff
         assert_raises(TmpDir::DirectoryError) { subject.create! }
       end
 
+      def test_that_create_does_not_return_a_value
+        assert_nil subject.create!
+      end
+
       private
 
       def subject(sha: 'ab12cd34', file_strategy: file_strategy_stub)
