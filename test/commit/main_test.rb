@@ -45,7 +45,7 @@ module FilesInMyDiff
       end
 
       def test_that_error_on_locating_files_is_propagated
-        file_strategy = file_strategy_stub(locate_files_success: false)
+        file_strategy = file_strategy_stub(decorate_success: false)
         assert_raises(TmpDir::FileError) do
           subject(file_strategy:).call
         end
@@ -54,9 +54,7 @@ module FilesInMyDiff
       def test_that_main_returns_dir_and_sha_and_changes
         result = subject.call
 
-        refute_empty result[:dir]
-        refute_empty result[:sha]
-        refute_empty result[:changes]
+        refute_empty result
       end
 
       private
@@ -65,8 +63,8 @@ module FilesInMyDiff
         Main.new(folder:, revision:, file_strategy:, git_strategy:)
       end
 
-      def file_strategy_stub(dir_exists: true, create_success: true, locate_files_success: true)
-        FileStrategyStub.new(dir_exists, create_success, locate_files_success)
+      def file_strategy_stub(dir_exists: true, create_success: true, decorate_success: true)
+        FileStrategyStub.new(dir_exists, create_success, decorate_success)
       end
 
       def git_strategy_stub(revision_exists: true, diff_success: true, checkout_success: true)
@@ -74,26 +72,46 @@ module FilesInMyDiff
       end
 
       class FileStrategyStub
-        def initialize(dir_exists, create_success, locate_files_success)
+        def initialize(dir_exists, create_success, decorate_success)
           @dir_exists = dir_exists
           @create_success = create_success
-          @locate_files_success = locate_files_success
+          @decorate_success = decorate_success
         end
 
         def dir_exists?(_folder)
           @dir_exists
         end
 
-        def create_tmp_dir(_sha)
-          raise TmpDir::DirectoryError unless @create_success
+        def revision_dir(_sha)
+          return BadCreateRevisionDirStub unless @create_success
+          return BadDecorateRevisionDirStub unless @decorate_success
 
-          'some_tpm_dir'
+          ValidRevisionDirStub
         end
+      end
 
-        def locate_files(_dir, _changes)
-          raise TmpDir::FileError unless @locate_files_success
+      module BadCreateRevisionDirStub
+        def self.create!
+          raise TmpDir::DirectoryError
+        end
+      end
 
-          [{}, {}]
+      module BadDecorateRevisionDirStub
+        class << self
+          def dir = 'lalalala'
+          def create! = true
+
+          def decorate(_changes)
+            raise TmpDir::FileError
+          end
+        end
+      end
+
+      module ValidRevisionDirStub
+        class << self
+          def dir = 'lalalala'
+          def create! = true
+          def decorate(_changes) = { test: true }
         end
       end
 

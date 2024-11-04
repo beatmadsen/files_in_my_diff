@@ -22,21 +22,14 @@ module FilesInMyDiff
         raise DirectoryError, "Failed to create tmp dir for #{path}: #{e.message}"
       end
 
-      def self.create_tmp_dir(sha)
-        path = File.join(Dir.tmpdir, 'files_in_my_diff', sha)
-        FileUtils.mkdir_p(path)
-        path
-      rescue StandardError => e
-        raise DirectoryError, "Failed to create tmp dir for #{sha}: #{e.message}"
-      end
-
-      def self.locate_files(_dir, changes)
-        # TODO
-        changes
+      def self.revision_dir(sha)
+        RevisionDir.new(sha:)
       end
     end
 
     class RevisionDir
+      attr_reader :dir
+
       def initialize(sha:, file_strategy: FileStrategy)
         @sha = sha
         @file_strategy = file_strategy
@@ -53,9 +46,17 @@ module FilesInMyDiff
 
         d_changes = changes.map do |change|
           change => { path:, type: }
-          { full_path: File.join(@dir, path), relative_path: path, type: }
+          { full_path: full_path(path), relative_path: path, type: }
         end
         { dir: @dir, sha: @sha, changes: d_changes }
+      end
+
+      private
+
+      def full_path(relative_path)
+        File.join(@dir, relative_path)
+      rescue StandardError => e
+        raise FileError, "Failed to create full path for #{relative_path}: #{e.message}"
       end
     end
   end
