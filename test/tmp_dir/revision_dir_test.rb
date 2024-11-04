@@ -27,6 +27,20 @@ module FilesInMyDiff
         assert_raises(TmpDir::DirectoryError) { subject.decorate([]) }
       end
 
+      def test_that_decorate_adds_full_paths_to_tmp_dir_for_each_change
+        subject = subject()
+        subject.create!
+        result = subject.decorate([{ path: 'a/b/c', type: :modified }, { path: 'd/e/f', type: :added }])
+
+        assert_equal(
+          { dir: 'some_tmpdir/files_in_my_diff/ab12cd34', sha: 'ab12cd34', changes: [
+            { full_path: 'some_tmpdir/files_in_my_diff/ab12cd34/a/b/c', relative_path: 'a/b/c', type: :modified },
+            { full_path: 'some_tmpdir/files_in_my_diff/ab12cd34/d/e/f', relative_path: 'd/e/f', type: :added },
+          ], },
+          result,
+        )
+      end
+
       private
 
       def subject(sha: 'ab12cd34', file_strategy: file_strategy_stub)

@@ -51,9 +51,11 @@ module FilesInMyDiff
       def decorate(changes)
         raise DirectoryError, "Directory for #{@sha} not yet created" if @dir.nil?
 
-        # TODO
-        decorated = changes
-        { dir: @dir, sha: @sha, changes: decorated }
+        d_changes = changes.map do |change|
+          change => { path:, type: }
+          { full_path: File.join(@dir, path), relative_path: path, type: }
+        end
+        { dir: @dir, sha: @sha, changes: d_changes }
       end
     end
   end
