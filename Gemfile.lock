@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    files_in_my_diff (1.0.0)
+    files_in_my_diff (1.0.1)
       git (~> 2.3)
 
 GEM
