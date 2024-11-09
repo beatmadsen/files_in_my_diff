@@ -10,7 +10,7 @@ end
 require_relative 'files_in_my_diff/version'
 require_relative 'files_in_my_diff/tmp_dir'
 require_relative 'files_in_my_diff/git'
-require_relative 'files_in_my_diff/commit'
+require_relative 'files_in_my_diff/resolver'
 
 module FilesInMyDiff
   def self.root
@@ -18,6 +18,6 @@ module FilesInMyDiff
   end
 
   def self.checkout(folder:, revision:)
-    Commit::Main.new(folder:, revision:).call
+    Resolver.new(folder:, revision:).call
   end
 end
