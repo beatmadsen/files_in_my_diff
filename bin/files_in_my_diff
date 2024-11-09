@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'bundler/setup'
+
+require 'setup_git'
+require 'files_in_my_diff'
+
+require 'json'
+
+folder = ARGV[0]
+revision = ARGV[1]
+
+begin
+  decorated = FilesInMyDiff.checkout(folder:, revision:)
+  puts decorated.to_json
+rescue FilesInMyDiff::Error => e
+  puts e.message
+  exit 1
+end

@@ -42,8 +42,12 @@ module FilesInMyDiff
 
         def sha = 'x'
 
-        def diff_parent
+        def diff(_other)
           @diff_success ? [Change.new('file_1', :added)] : raise(Git::DiffError)
+        end
+
+        def parents
+          [self]
         end
       end
 

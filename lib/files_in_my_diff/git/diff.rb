@@ -17,7 +17,10 @@ module FilesInMyDiff
       end
 
       def changes
-        @object.diff_parent.map do |change|
+        parent = @object.parents.first
+        return [] if parent.nil?
+
+        parent.diff(@object).map do |change|
           { path: change.path, type: change.type }
         end
       end
