@@ -1,8 +1,6 @@
 # FilesInMyDiff
 
-TODO: Delete this and the text below, and describe your gem
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/files_in_my_diff`. To experiment with that code, run `bin/console` for an interactive prompt.
+A command line tool that takes a git repository path and revision as input. It creates a temporary worktree, checks out the specified revision, and returns a JSON object containing the worktree path, commit SHA, and list of changed files. The tool helps you inspect changes in any git revision without affecting your current working directory.
 
 ## Installation
 
@@ -22,7 +20,15 @@ gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
 
 ## Usage
 
-TODO: Write usage instructions here
+CLI usage as described by the help message:
+```
+Usage: files_in_my_diff <folder> <revision>
+
+folder   - Path to git repository
+revision - Git revision (branch, tag, or commit SHA)
+```
+
+If you wish to invoke the logic programmatically, you can use the method `FilesInMyDiff.checkout(folder: <repository path>, revision: <git revision>)`.
 
 ## Development
 
@@ -32,7 +38,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/files_in_my_diff.
+Bug reports and pull requests are welcome on GitHub at https://github.com/beatmadsen/files_in_my_diff.
 
 ## License
 

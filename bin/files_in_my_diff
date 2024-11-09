@@ -1,15 +1,21 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'bundler/setup'
-
-require 'setup_git'
-require 'files_in_my_diff'
-
-require 'json'
-
 folder = ARGV[0]
 revision = ARGV[1]
+
+if folder.nil? || folder == '--help' || revision.nil?
+  puts 'Usage: files_in_my_diff <folder> <revision>'
+  puts
+  puts 'folder   - Path to git repository'
+  puts 'revision - Git revision (branch, tag, or commit SHA)'
+  exit 1
+end
+
+require 'bundler/setup'
+require 'setup_git'
+require 'files_in_my_diff'
+require 'json'
 
 begin
   decorated = FilesInMyDiff.checkout(folder:, revision:)

@@ -12,5 +12,5 @@ gem 'rubocop-minitest', '~> 0.36'
 gem 'rubocop-rake', '~> 0.6'
 
 group :development, :test do
-  gem 'activesupport', '~> 7.2'
+  gem 'activesupport', '~> 8.0'
 end
