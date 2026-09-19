@@ -9,5 +9,6 @@ require 'rubocop/rake_task'
 
 RuboCop::RakeTask.new
 
-# auto-correct rubocop offenses
-task default: %i[test rubocop:autocorrect]
+# Plain rubocop, not rubocop:autocorrect. A gate that rewrites the code it is
+# judging reports success by editing the working tree, which is not a verdict.
+task default: %i[test rubocop]

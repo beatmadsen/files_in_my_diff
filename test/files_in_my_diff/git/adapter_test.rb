@@ -70,7 +70,7 @@ module FilesInMyDiff
           @checkout_success = checkout_success
         end
 
-        def add_worktree(_path, _revision)
+        def worktree_add(_path, _revision)
           raise @checkout_success if @checkout_success.is_a?(::Git::FailedError)
           raise MyFailedError unless @checkout_success
         end

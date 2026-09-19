@@ -12,8 +12,6 @@ if folder.nil? || folder == '--help' || revision.nil?
   exit 1
 end
 
-require 'bundler/setup'
-require 'setup_git'
 require 'files_in_my_diff'
 require 'json'
 

@@ -12,7 +12,7 @@ module FilesInMyDiff
       end
 
       def checkout_worktree(path, revision)
-        @repo.add_worktree(path, revision)
+        @repo.worktree_add(path, revision)
       rescue ::Git::FailedError => e
         unless e.result.stderr.include? 'already exists'
           raise CheckoutError,

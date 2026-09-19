@@ -98,7 +98,7 @@ module FilesInMyDiff
     module BadDecorateRevisionDirStub
       class << self
         def dir = 'lalalala'
-        def create! = true
+        def create! = nil
 
         def decorate(_changes)
           raise TmpDir::FileError
@@ -109,7 +109,7 @@ module FilesInMyDiff
     module ValidRevisionDirStub
       class << self
         def dir = 'lalalala'
-        def create! = true
+        def create! = nil
         def decorate(_changes) = { test: true }
       end
     end
@@ -141,7 +141,7 @@ module FilesInMyDiff
 
     module ValidDiffStub
       class << self
-        def validate! = true
+        def validate! = nil
         def sha = 'abcd1234'
         def changes = []
       end

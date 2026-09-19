@@ -2,11 +2,7 @@
 
 require 'fileutils'
 
-module FilesInMyDiff
-  class Error < StandardError; end
-  class ValidationError < Error; end
-end
-
+require_relative 'files_in_my_diff/errors'
 require_relative 'files_in_my_diff/version'
 require_relative 'files_in_my_diff/tmp_dir'
 require_relative 'files_in_my_diff/git'
